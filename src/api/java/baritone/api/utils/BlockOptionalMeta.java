@@ -26,8 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.MatchResult;
@@ -46,7 +44,7 @@ public final class BlockOptionalMeta {
     private static final Pattern pattern = Pattern.compile("^(.+?)(?::(\\d+))?$");
     private static final Map<Object, Object> normalizations;
 
-    public BlockOptionalMeta(@Nonnull Block block, @Nullable Integer meta) {
+    public BlockOptionalMeta(Block block, Integer meta) {
         this.block = block;
         this.noMeta = meta == null;
         this.meta = noMeta ? 0 : meta;
@@ -55,11 +53,11 @@ public final class BlockOptionalMeta {
         this.stackHashes = getStackHashes(blockstates);
     }
 
-    public BlockOptionalMeta(@Nonnull Block block) {
+    public BlockOptionalMeta(Block block) {
         this(block, null);
     }
 
-    public BlockOptionalMeta(@Nonnull String selector) {
+    public BlockOptionalMeta(String selector) {
         Matcher matcher = pattern.matcher(selector);
 
         if (!matcher.find()) {
@@ -243,7 +241,7 @@ public final class BlockOptionalMeta {
         return state.getBlock().getMetaFromState(normalize(state));
     }
 
-    private static Set<IBlockState> getStates(@Nonnull Block block, @Nullable Integer meta) {
+    private static Set<IBlockState> getStates(Block block, Integer meta) {
         return block.getBlockState().getValidStates().stream()
                 .filter(blockstate -> meta == null || stateMeta(blockstate) == meta)
                 .collect(Collectors.toSet());
@@ -278,11 +276,11 @@ public final class BlockOptionalMeta {
         return noMeta ? null : meta;
     }
 
-    public boolean matches(@Nonnull Block block) {
+    public boolean matches(Block block) {
         return block == this.block;
     }
 
-    public boolean matches(@Nonnull IBlockState blockstate) {
+    public boolean matches(IBlockState blockstate) {
         Block block = blockstate.getBlock();
         return block == this.block && stateHashes.contains(blockstate.hashCode());
     }

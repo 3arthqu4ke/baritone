@@ -41,9 +41,21 @@ buildscript {
 import baritone.gradle.task.CreateDistTask
 import baritone.gradle.task.ProguardTask
 
+boolean TWEAKER = false
+
+if (System.getenv("BARITONE_USE_TWEAKER") == "true") { // For CI
+    TWEAKER = true
+} else {
+    TWEAKER = false
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+if (TWEAKER) {
+    apply plugin: 'net.minecraftforge.gradle.tweaker-client'
+} else {
+    apply plugin: 'net.minecraftforge.gradle.forge'
+}
 apply plugin: 'org.spongepowered.mixin'
 
 sourceCompatibility = targetCompatibility = '1.8'
@@ -67,9 +79,13 @@ sourceSets {
 }
 
 minecraft {
-    version = '1.12.2'
+    if (TWEAKER) {
+        version = '1.12.2'
+        tweakClass = 'bartione.launch.BaritoneTweaker'
+    } else {
+        version = '1.12.2-14.23.5.2768'
+    }
     mappings = 'stable_39'
-    tweakClass = 'baritone.launch.BaritoneTweaker'
     runDir = 'run'
 
     // The sources jar should use SRG names not MCP to ensure compatibility with all mappings
@@ -127,13 +143,23 @@ jar {
     preserveFileTimestamps = false
     reproducibleFileOrder = true
 
-    manifest {
-        attributes(
-                'MixinConfigs': 'mixins.baritone.json',
-
-                'Implementation-Title': 'Baritone',
-                'Implementation-Version': version
-        )
+    if (TWEAKER) {
+        manifest {
+            attributes(
+                    'MixinConfigs': 'mixins.baritone.json',
+                    'Implementation-Title': 'Baritone',
+                    'Implementation-Version': version
+            )
+        }
+    } else {
+        manifest {
+            attributes(
+                    'MixinConfigs': 'mixins.baritone.json',
+                    'TweakClass': 'baritone.launch.BaritoneTweaker',
+                    'Implementation-Title': 'Baritone',
+                    'Implementation-Version': version
+            )
+        }
     }
 }
 

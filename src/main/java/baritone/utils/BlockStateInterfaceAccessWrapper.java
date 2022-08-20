@@ -27,7 +27,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 
-import javax.annotation.Nullable;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * @author Brady
@@ -42,7 +42,6 @@ public final class BlockStateInterfaceAccessWrapper implements IBlockAccess {
         this.bsi = bsi;
     }
 
-    @Nullable
     @Override
     public TileEntity getTileEntity(BlockPos pos) {
         return null;
@@ -77,5 +76,11 @@ public final class BlockStateInterfaceAccessWrapper implements IBlockAccess {
     @Override
     public WorldType getWorldType() {
         return this.bsi.world.getWorldType();
+    }
+
+    @Override
+    public boolean isSideSolid(BlockPos pos, EnumFacing side,
+                               boolean _default) {
+        return _default;
     }
 }

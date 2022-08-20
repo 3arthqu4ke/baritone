@@ -1,0 +1,8 @@
+jdk:
+  - openjdk8
+before_install:
+  - chmod +x gradlew
+  - export BARITONE_USE_TWEAKER=true
+  - ./gradlew setupDecompWorkspace
+  - export BARITONE_USE_TWEAKER=false
+  - ./gradlew setupDecompWorkspace
